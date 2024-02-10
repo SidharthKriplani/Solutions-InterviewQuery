@@ -1,0 +1,29 @@
+https://www.interviewquery.com/questions/duplicate-rows
+
+SQL:
+
+WITH Filtered_Layer_1 AS 
+(
+    SELECT 
+        Created_At, 
+        ID, 
+        Name, 
+        ROW_NUMBER() OVER(PARTITION BY Combo ORDER BY Created_At) AS Rownum
+    FROM 
+    (
+        SELECT 
+            ID, 
+            Name, 
+            Created_At, 
+            CONCAT(ID, Name, Created_At) AS Combo
+        FROM Users
+    ) AS Subquery
+)
+
+SELECT Created_At, ID, Name
+FROM Filtered_Layer_1
+WHERE Rownum = 2;
+
+
+PYTHON:
+
