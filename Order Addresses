@@ -1,0 +1,24 @@
+https://www.interviewquery.com/questions/order-addresses
+
+SQL:
+
+WITH Join_CTE AS 
+(
+    SELECT 
+        T.ID AS ID, 
+        CAST(T.User_ID AS INT) AS User_ID, 
+        T.Shipping_Address AS Shipping_Address, 
+        U.Name AS Name, 
+        U.Address AS Address
+    FROM Transactions T
+    JOIN Users U 
+    ON CAST(T.User_ID AS INT) = U.ID
+)
+
+SELECT 1.0 * COUNT(*) / (SELECT COUNT(*) FROM Join_CTE) AS Home_Address_Percent
+FROM Join_CTE
+WHERE Shipping_Address = Address;
+
+
+PYTHON:
+
