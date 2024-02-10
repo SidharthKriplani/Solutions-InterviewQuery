@@ -1,0 +1,26 @@
+https://www.interviewquery.com/questions/closest-sat-scores
+
+SQL:
+
+WITH Filtered_Layer_1 AS 
+(
+    SELECT 
+        S1.Student AS One_Student, 
+        S1.Score AS S1_Score, 
+        S2.Student AS Other_Student, 
+        S2.Score AS S2_Score, 
+        ABS(S1.Score - S2.Score) AS Score_Diff
+
+    FROM Scores S1
+    CROSS JOIN Scores S2
+    WHERE S1.Student != S2.Student
+    ORDER BY 5 ASC, 1 ASC, 3 ASC
+)
+
+SELECT One_Student, Other_Student, Score_Diff
+FROM Filtered_Layer_1
+LIMIT 1;
+
+
+PYTHON:
+
