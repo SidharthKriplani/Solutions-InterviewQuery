@@ -1,0 +1,28 @@
+SQL (PostGre SQL):
+
+WITH Filter_Layer_1 AS (
+    SELECT User_ID
+    FROM (
+        SELECT 
+            User_ID, 
+            Position_Name, 
+            Start_Date, 
+            ROW_NUMBER() OVER(PARTITION BY User_ID ORDER BY Start_Date ASC) AS Rank
+        FROM User_Experiences
+    ) A
+    WHERE (LOWER(Position_Name) = 'data analyst' AND Rank = 1)
+       OR (LOWER(Position_Name) = 'data scientist' AND Rank = 2)
+), 
+
+Filter_Layer_2 AS (
+    SELECT User_ID
+    FROM Filter_Layer_1
+    GROUP BY 1
+    HAVING COUNT(*) > 1
+)
+
+SELECT 1.0 * COUNT(*) / (SELECT COUNT(DISTINCT User_ID) FROM User_Experiences) AS Percentage
+FROM Filter_Layer_2;
+
+
+PYTHON:
