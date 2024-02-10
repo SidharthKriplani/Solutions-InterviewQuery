@@ -1,0 +1,30 @@
+https://www.interviewquery.com/questions/completed-shipments
+
+SQL:
+
+WITH Join_Table AS 
+(
+    SELECT 
+        C.Customer_ID AS Customer_ID, 
+        C.Membership_Start_Date AS Membership_Start_Date, 
+        C.Membership_End_Date AS Membership_End_Date, 
+        S.Shipment_ID AS Shipment_ID, 
+        S.Ship_Date AS Ship_Date, 
+        S.Quantity AS Quantity
+    FROM Customers C 
+    JOIN Shipments S 
+    ON C.Customer_ID = S.Customer_ID
+)
+
+SELECT 
+    Shipment_ID, Ship_Date, Customer_ID, 
+    CASE 
+        WHEN Ship_Date BETWEEN Membership_Start_Date AND Membership_End_Date THEN 'Y' 
+        ELSE 'N' 
+    END AS Is_Member, 
+    Quantity
+FROM Join_Table;
+
+
+PYTHON:
+
