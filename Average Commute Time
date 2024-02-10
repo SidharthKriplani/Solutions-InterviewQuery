@@ -1,0 +1,23 @@
+https://www.interviewquery.com/questions/average-commute-time
+
+SQL:
+
+WITH Avg_Commuter_Time AS 
+(
+    SELECT Commuter_ID, FLOOR(AVG(EXTRACT(EPOCH FROM (end_dt - start_dt))) / 60) AS Avg_Commuter_Time
+    FROM Rides
+    WHERE LOWER(City) LIKE '%ny%'
+    GROUP BY 1
+)
+
+SELECT Commuter_ID, Avg_Commuter_Time, 
+    (
+        SELECT FLOOR(AVG(EXTRACT(EPOCH FROM (end_dt - start_dt))) / 60) 
+        FROM Rides
+    ) AS Avg_Time
+FROM Avg_Commuter_Time
+ORDER BY 1
+
+
+PYTHON:
+
