@@ -1,0 +1,22 @@
+https://www.interviewquery.com/questions/random-sql-sample
+
+SQL: 
+
+SELECT t.*
+FROM big_table t
+JOIN (
+    SELECT ROUND(MIN(id) + (MAX(id) - MIN(id)) * RANDOM()) AS random_id
+    FROM big_table
+) AS x ON t.id >= CAST(x.random_id AS integer)
+ORDER BY t.id ASC
+LIMIT 1
+
+Explanation:
+--It calculates a random id within the range of id values present in big_table using a subquery. This is done by first determining the minimum and maximum id values in the table, and then generating a random number within this range.
+--The main query then selects the row from big_table with an id greater than or equal to this randomly generated id.
+--The ORDER BY t.id ASC clause ensures that among the rows that meet the criteria, the one with the smallest id (i.e., the closest match to the random id) is chosen.
+--Finally, LIMIT 1 guarantees that only one row is returned from the query.
+
+
+PYTHON:
+
