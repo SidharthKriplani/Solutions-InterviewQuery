@@ -1,0 +1,20 @@
+https://www.interviewquery.com/questions/monthly-customer-report
+
+SQL:
+
+with join_table as 
+(select 
+t.id, t.user_id, t.created_at, t.product_id, t.quantity, 
+p.name, p.price, 
+u.name, u.sex
+
+from transactions t
+full outer join products p on p.id = t.id
+full outer join users u on u.id = t.id)
+
+select distinct extract(month from created_at)
+from join_table
+where extract(year from created_at) = 2020
+
+
+PYTHON:
