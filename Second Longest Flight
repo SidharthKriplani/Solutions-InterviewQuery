@@ -1,0 +1,81 @@
+https://www.interviewquery.com/questions/second-longest-flight
+
+SQL:
+
+WITH union_table AS 
+(
+    SELECT 
+        id, 
+        source_location, 
+        destination_location, 
+        CONCAT(source_location, destination_location) AS combined_loc,
+        plane_id, 
+        flight_start, 
+        flight_end, 
+        minutes, 
+        DENSE_RANK() OVER(PARTITION BY plane_id ORDER BY source_location) AS rankk 
+    FROM    
+    (
+        SELECT 
+            id, 
+            source_location, 
+            destination_location, 
+            CONCAT(source_location, destination_location) AS combined_loc, 
+            plane_id, 
+            flight_start, 
+            flight_end, 
+            EXTRACT(EPOCH FROM (flight_end - flight_start))/60 AS minutes 
+        FROM flights 
+        UNION ALL
+        SELECT 
+            id, 
+            destination_location, 
+            source_location, 
+            CONCAT(destination_location, source_location) AS combined_loc, 
+            plane_id, 
+            flight_start, 
+            flight_end, 
+            EXTRACT(EPOCH FROM (flight_end - flight_start))/60 AS minutes 
+        FROM flights
+    ) a
+), 
+
+filtered_plane_id AS 
+(
+    SELECT 
+        plane_id 
+    FROM union_table
+    WHERE rankk = 1 AND 
+          combined_loc IN 
+          (
+              SELECT combined_loc
+              FROM union_table
+              WHERE rankk = 1
+              GROUP BY combined_loc
+              HAVING COUNT(*) > 1
+          )
+),
+
+filtered_layer_1 AS 
+(
+    SELECT 
+        id, 
+        source_location, 
+        destination_location, 
+        plane_id, 
+        flight_start, 
+        flight_end, 
+        minutes, 
+        DENSE_RANK() OVER(PARTITION BY combined_loc ORDER BY minutes DESC) AS rankk
+    FROM union_table
+    WHERE rankk = 1
+    AND plane_id IN (SELECT plane_id FROM filtered_plane_id)
+    ORDER BY minutes DESC
+)
+
+SELECT *
+FROM filtered_layer_1;
+
+
+PYTHON:
+
