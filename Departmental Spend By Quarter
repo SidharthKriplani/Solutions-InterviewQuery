@@ -1,0 +1,26 @@
+https://www.interviewquery.com/questions/departmental-spend-by-quarter
+
+SQL:
+
+WITH Layer_One AS 
+(
+SELECT 
+CONCAT('Q', EXTRACT(QUARTER FROM Transaction_Date)) AS Quarter, 
+Department, 
+SUM(Amount) AS Spending
+FROM Transactions
+GROUP BY 1, 2
+)
+
+SELECT 
+Quarter, 
+SUM(CASE WHEN Department = 'IT' THEN Spending ELSE 0 END) AS IT_Spending,
+SUM(CASE WHEN Department = 'HR' THEN Spending ELSE 0 END) AS HR_Spending,
+SUM(CASE WHEN Department = 'Marketing' THEN Spending ELSE 0 END) AS Marketing_Spending, 
+SUM(CASE WHEN Department NOT IN ('HR', 'IT', 'Marketing') THEN Spending ELSE 0 END) AS Other_Spending 
+FROM Layer_One
+GROUP BY 1
+ORDER BY 1
+
+
+PYTHON:
