@@ -1,0 +1,33 @@
+https://www.interviewquery.com/questions/subscription-overlap
+
+SQL:
+
+WITH Cross_Join_Table AS 
+(
+SELECT 
+S1.User_ID AS S1_User_ID, S1.Start_Date AS S1_Start_Date, S1.End_Date AS S1_End_Date, 
+S2.User_ID AS S2_User_ID, S2.Start_Date AS S2_Start_Date, S2.End_Date AS S2_End_Date
+FROM Subscriptions S1 
+CROSS JOIN Subscriptions S2 
+WHERE S1.User_ID <> S2.User_ID
+), 
+
+Filter_Layer_One AS 
+(
+SELECT S1_User_ID AS User_ID, 
+CASE WHEN 
+(S1_Start_Date < S2_Start_Date AND S1_End_Date > S2_End_Date)
+OR (S1_Start_Date > S2_Start_Date AND S1_End_Date < S2_End_Date)
+OR (S1_Start_Date < S2_Start_Date AND S1_End_Date < S2_End_Date AND S1_End_Date > S2_Start_Date)
+OR (S1_Start_Date > S2_Start_Date AND S1_End_Date > S2_End_Date AND S1_Start_Date < S2_End_Date)
+THEN 1 ELSE 0 END AS Overlap
+FROM Cross_Join_Table
+)
+
+SELECT CEILING(AVG(Overlap)) AS Overlap, User_ID
+FROM Filter_Layer_One 
+GROUP BY 2
+
+
+PYTHON:
+
