@@ -1,0 +1,26 @@
+https://www.interviewquery.com/questions/lowest-paid
+
+SQL:
+
+WITH Triple_Join AS 
+(
+SELECT 
+E.ID, E.First_Name, E.Last_Name, E.Salary, E.Department_ID, 
+EP.Project_ID, 
+P.Title, P.Start_Date, P.End_Date, P.Budget
+
+FROM Employees E 
+JOIN Employee_Projects EP ON EP.Employee_ID = E.ID 
+JOIN Projects P ON P.ID = E.ID 
+)
+
+SELECT COUNT(*) AS Completed_Projects, ID AS Employee_ID, AVG(Salary) AS Salary
+FROM Triple_Join
+WHERE End_Date IS NOT NULL 
+AND ID IN (SELECT ID FROM Triple_Join GROUP BY 1 HAVING COUNT(*)>1) 
+GROUP BY 2 
+ORDER BY 3 ASC
+LIMIT 3
+
+
+PYTHON:
