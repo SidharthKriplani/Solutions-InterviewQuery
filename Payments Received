@@ -1,0 +1,28 @@
+https://www.interviewquery.com/questions/payments-received
+
+SQL:
+
+WITH CTE AS (
+SELECT
+sender_id, recipient_id, payment_state, amount_cents
+FROM payments P
+WHERE sender_id IN (SELECT id
+FROM users
+WHERE EXTRACT(MONTH FROM created_at) = 1 AND EXTRACT(YEAR FROM created_at) = 2020))
+
+SELECT *
+FROM
+(SELECT id, SUM(amount_cents)/100 AS dollars
+FROM
+(SELECT sender_id AS id, amount_cents
+FROM CTE
+WHERE LOWER(payment_state) = 'success'
+UNION ALL
+SELECT recipient_id AS id, amount_cents
+FROM CTE
+WHERE LOWER(payment_state) = 'success') A
+GROUP BY 1) A
+
+
+PYTHON:
+
