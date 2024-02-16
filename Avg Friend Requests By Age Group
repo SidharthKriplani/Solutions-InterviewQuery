@@ -1,0 +1,35 @@
+https://www.interviewquery.com/questions/avg-friend-requests-by-age-group
+
+SQL:
+
+With CTE AS (
+SELECT
+FR.requester_id AS sender,
+FR.receiver_id AS receiver,
+FR.sent_at AS sent_time,
+RA.accepted_at AS accepted_time
+
+FROM friend_requests FR
+JOIN requests_accepted RA
+ON FR.requester_id = RA.requester_id AND FR.receiver_id = RA.accepter_id),
+
+CTE_2 AS (
+SELECT
+AG.age_group AS age_group, COUNT(*) cnt_1
+
+FROM CTE
+JOIN age_groups AG
+ON AG.user_id = CTE.sender
+GROUP BY 1),
+
+CTE_3 AS (
+SELECT age_group, COUNT(*) cnt_2 FROM age_groups GROUP BY 1)
+
+SELECT CTE_2.age_group, ROUND(CTE_2.cnt_1/CTE_3.cnt_2, 2) AS average_acceptance
+FROM CTE_2
+JOIN CTE_3
+ON CTE_2.age_group = CTE_3.age_group
+
+
+PYTHON:
+
