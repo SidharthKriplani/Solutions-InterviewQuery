@@ -1,0 +1,41 @@
+https://www.interviewquery.com/questions/third-unique-song
+
+SQL:
+
+WITH join_table AS (
+SELECT
+sp.user_id, sp.song_name, sp.date_played, u.name
+FROM song_plays SP
+FULL OUTER JOIN users U ON SP.user_id = U.id),
+
+unique_names_three_songs AS (
+SELECT name
+FROM join_table
+GROUP BY 1
+HAVING COUNT(DISTINCT song_name) > 2
+),
+
+filtered_layer_1 AS (
+SELECT name, song_name, MIN(date_played) AS first_played
+FROM join_table
+WHERE name IN (SELECT name FROM unique_names_three_songs)
+GROUP BY name, song_name
+ORDER BY first_played ASC),
+
+filtered_layer_2 AS (
+SELECT name, song_name, first_played,
+DENSE_RANK() OVER(PARTITION BY name ORDER BY first_played ASC) AS rankk
+FROM filtered_layer_1)
+
+SELECT name, first_played AS date_played, song_name
+FROM filtered_layer_2
+WHERE rankk = 3
+UNION
+SELECT DISTINCT name, CAST(NULL AS TIMESTAMP), CAST(NULL AS VARCHAR)
+FROM join_table
+WHERE name NOT IN (SELECT name FROM unique_names_three_songs)
+ORDER BY 1 ASC
+
+
+PYTHON:
+
