@@ -1,0 +1,20 @@
+https://www.interviewquery.com/questions/employees-before-managers
+
+SQL:
+
+WITH CTE AS (
+SELECT
+E.id AS employee_id, CONCAT(E.first_name, ' ', E.last_name) AS employee_name, E.join_date AS employee_join_date,
+E.manager_id AS manager_id, M.name AS manager_name, M.join_date AS manager_join_date
+
+FROM employees E
+JOIN managers M
+ON E.manager_id = M.id)
+
+SELECT DISTINCT employee_name
+FROM CTE
+WHERE employee_join_date < manager_join_date
+
+
+PYTHON:
+
