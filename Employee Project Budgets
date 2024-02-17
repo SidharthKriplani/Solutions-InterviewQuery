@@ -1,0 +1,22 @@
+https://www.interviewquery.com/questions/employee-project-budgets
+
+SQL:
+
+WITH join_table AS (
+SELECT
+p.id, p.title, p.start_date, p.end_date, p.budget,
+ep.employee_id
+FROM employee_projects EP
+JOIN projects P
+ON P.id = EP.project_id)
+
+SELECT
+AVG(budget)/COUNT(DISTINCT employee_id) AS budget_per_employee, title
+FROM join_table
+GROUP BY 2
+ORDER BY 1 DESC
+LIMIT 5
+
+
+PYTHON:
+
