@@ -1,0 +1,42 @@
+https://www.interviewquery.com/questions/project-pairs
+
+SQL:
+
+WITH cte AS (
+SELECT id, date,
+DENSE_RANK() OVER(ORDER BY date) AS rankk
+FROM (
+SELECT id, DATE(start_date) AS date
+FROM projects
+UNION
+SELECT id, DATE(end_date) AS date
+FROM projects) A
+ORDER BY 2, 1),
+
+selected_ranks AS (
+SELECT rankk
+FROM cte
+GROUP BY rankk
+HAVING COUNT(rankk) > 1),
+
+final_layer_1 AS (
+SELECT *
+FROM cte
+WHERE rankk IN (SELECT rankk FROM selected_ranks)),
+
+final_layer_2 AS (
+SELECT id, date, rankk,
+DENSE_RANK() OVER(PARTITION BY rankk ORDER BY id) AS rank2
+FROM final_layer_1)
+
+SELECT start_date AS date,
+title AS project_title_end
+FROM projects
+WHERE id IN (
+SELECT DISTINCT id
+FROM final_layer_2
+WHERE rank2 = 1)
+
+
+PYTHON:
+
