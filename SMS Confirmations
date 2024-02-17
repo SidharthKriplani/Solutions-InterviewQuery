@@ -1,0 +1,21 @@
+https://www.interviewquery.com/questions/sms-confirmations
+
+SQL:
+
+WITH CTE AS (
+SELECT 
+SS.ds, SS.country, SS.carrier, SS.phone_number, SS.type, 
+C.date
+FROM confirmers C
+JOIN sms_sends SS  
+ON SS.phone_number = C.phone_number
+WHERE EXTRACT(DAY FROM SS.ds) = 28 AND EXTRACT(MONTH FROM SS.ds) = 2 AND EXTRACT(YEAR FROM C.date) = 2020
+AND SS.type LIKE '%confirmation%')
+
+SELECT carrier, country, COUNT(*) AS unique_numbers
+FROM CTE
+GROUP BY 1, 2
+
+
+PYTHON:
+
