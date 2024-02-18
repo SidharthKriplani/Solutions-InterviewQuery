@@ -1,0 +1,23 @@
+https://www.interviewquery.com/questions/free-seats
+
+SQL:
+
+WITH CTE AS (
+SELECT
+F.id AS flight_id, F.plane_id AS plane_id,
+FP.seat_id,
+P.number_of_seats AS number_of_seats
+
+FROM flights F
+JOIN flight_purchases FP ON FP.flight_id = F.id
+JOIN planes P ON F.plane_id = P.id)
+
+SELECT
+flight_id,
+AVG(number_of_seats) - COUNT(seat_id) AS free_seats
+FROM CTE
+GROUP BY 1
+
+
+PYTHON:
+
