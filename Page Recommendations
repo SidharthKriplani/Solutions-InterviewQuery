@@ -1,0 +1,24 @@
+https://www.interviewquery.com/questions/page-recommendations
+
+SQL:
+
+WITH join_cte AS (
+SELECT 
+ps.page_id, ps.postal_code AS page_postal_code, ps.price, 
+r.user_id AS recommending_user, r.page_id AS recommended_page, 
+u.postal_code AS user_postal_code 
+FROM recommendations r
+JOIN page_sponsorships ps ON ps.page_id = r.page_id 
+JOIN users u ON u.id = r.user_id)
+
+SELECT 
+page_id AS page, 
+page_postal_code AS postal_code, 
+1.0*SUM(CASE WHEN page_postal_code = user_postal_code THEN 1 ELSE 0 END)/COUNT(page_id) AS percentage
+FROM join_cte
+GROUP BY 1, page_postal_code
+ORDER BY 1, 2
+
+
+PYTHON:
+
