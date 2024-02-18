@@ -1,0 +1,38 @@
+https://www.interviewquery.com/questions/total-time-in-flight
+
+SQL:
+
+WITH CTE AS (
+SELECT
+plane_id,
+flight_start,
+EXTRACT(YEAR FROM flight_start) AS flight_start_year,
+EXTRACT(MONTH FROM flight_start) AS flight_start_month,
+EXTRACT(DAY FROM flight_start) AS flight_start_day,
+flight_end,
+EXTRACT(YEAR FROM flight_end) AS flight_end_year,
+EXTRACT(MONTH FROM flight_end) AS flight_end_month,
+EXTRACT(DAY FROM flight_end) AS flight_end_day
+FROM flights),
+
+filtered_layer_1 AS (
+SELECT
+plane_id,
+CONCAT(flight_start_year, '-', flight_start_month, '-', flight_start_day) AS calendar_day,
+86400 - (EXTRACT(HOUR FROM flight_start)*3600 + EXTRACT(MINUTE FROM flight_start)*60 + EXTRACT(SECOND FROM flight_start)) AS seconds
+FROM CTE
+UNION
+SELECT
+plane_id,
+CONCAT(flight_end_year, '-', flight_end_month, '-', flight_end_day) AS calendar_day,
+EXTRACT(HOUR FROM flight_end)*3600 + EXTRACT(MINUTE FROM flight_end)*60 + EXTRACT(SECOND FROM flight_end) AS seconds
+FROM CTE)
+
+SELECT calendar_day, plane_id, ROUND(SUM(seconds)/360, 0) AS time_in_min
+FROM filtered_layer_1
+GROUP BY 1, 2
+ORDER BY 2, 1
+
+
+PYTHON:
+
