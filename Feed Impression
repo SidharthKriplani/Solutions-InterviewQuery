@@ -1,0 +1,28 @@
+https://www.interviewquery.com/questions/feed-impression
+
+SQL:
+
+WITH join_cte AS (
+SELECT p.pin_id, p.created_at,
+el.event_id, el.user_id, el.action_type, el.action_date
+FROM event_log EL
+JOIN pins P
+ON P.pin_id = EL.pin_id),
+
+engagement_users AS (
+SELECT DISTINCT user_id
+FROM join_cte
+WHERE LOWER(action_type) LIKE '%engagement%'),
+
+filter_layer_1 AS (
+SELECT *, ROUND((EXTRACT(EPOCH FROM action_date)-EXTRACT(EPOCH FROM created_at))/86400, 2) AS day_diff
+FROM join_cte)
+
+SELECT 1.0*COUNT(DISTINCT user_id)/(SELECT COUNT(DISTINCT user_id) FROM join_cte) AS percent_of_users
+FROM filter_layer_1
+WHERE day_diff < 8
+AND user_id IN (SELECT user_id FROM engagement_users)
+
+
+PYTHON:
+
