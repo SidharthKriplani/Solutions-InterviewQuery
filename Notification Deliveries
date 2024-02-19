@@ -1,0 +1,26 @@
+https://www.interviewquery.com/questions/notification-deliveries
+
+SQL:
+
+WITH CTE AS (
+SELECT
+ND.notification, ND.user_id, ND.created_at AS notification_created_at,
+U.created_at AS user_created_at, U.conversion_date
+
+FROM users U
+JOIN notification_deliveries ND
+ON ND.user_id = U.id
+WHERE ND.user_id NOT IN (SELECT DISTINCT id FROM users WHERE conversion_date IS NULL)),
+
+filter_layer_1 AS (
+SELECT user_id, COUNT(notification) AS cnt
+FROM CTE
+GROUP BY 1)
+
+SELECT cnt, COUNT(user_id)
+FROM filter_layer_1
+GROUP BY 1
+
+
+PYTHON:
+
