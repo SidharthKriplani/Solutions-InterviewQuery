@@ -1,0 +1,27 @@
+https://www.interviewquery.com/questions/comments-histogram
+
+SQL:
+
+WITH CTE AS (
+SELECT
+U.id AS user_id, U.name AS user_name, U.created_at AS user_created_at,
+U.neighborhood_id AS neighborhood_id, U.mail AS user_mail,
+C.body AS comment_body, C.created_at AS comment_created_at
+FROM users U
+JOIN comments C
+ON C.user_id = U.id
+WHERE EXTRACT(MONTH FROM C.created_at) = 1
+AND EXTRACT(YEAR FROM C.created_at) = 2020),
+
+filter_layer_1 AS (
+SELECT user_id, COUNT(*) AS cnt
+FROM CTE
+GROUP BY 1)
+
+SELECT cnt, COUNT(*)
+FROM filter_layer_1
+GROUP BY 1
+
+
+PYTHON:
+
