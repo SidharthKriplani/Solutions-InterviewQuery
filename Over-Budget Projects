@@ -1,0 +1,32 @@
+https://www.interviewquery.com/questions/over-budget-projects
+
+SQL:
+
+WITH employee_projects AS (
+SELECT
+E.id AS employee_id, E.first_name AS employee_first_name, E.last_name AS employee_last_name, E.salary AS employee_salary, E.department_id AS employee_department_id,
+P.id AS project_id, P.title AS project_title, P.start_date AS project_start_date, P.end_date AS project_end_date, P.budget AS project_budget
+FROM employee_projects EP
+JOIN employees E ON EP.employee_id = E.id
+JOIN projects P ON P.id = EP.project_id),
+
+full_table AS (
+SELECT
+employee_id, employee_first_name, employee_last_name, employee_salary,
+project_id, project_title, project_start_date, project_end_date, project_budget,
+D.id AS employee_department_id, D.name AS employee_department_name
+FROM employee_projects EP
+JOIN departments D
+ON EP.employee_department_id = D.id)
+
+SELECT DISTINCT
+CASE
+WHEN ROUND(employee_salary*((EXTRACT(EPOCH FROM project_end_date) -
+EXTRACT(EPOCH FROM project_start_date))/86400)/365, 0) > project_budget THEN 'overbudget' ELSE 'within budget' END AS project_forecast,
+project_title AS title
+FROM full_table
+ORDER BY project_title
+
+
+PYTHON:
+
