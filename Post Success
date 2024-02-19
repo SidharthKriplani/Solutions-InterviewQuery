@@ -1,0 +1,27 @@
+https://www.interviewquery.com/questions/post-success
+
+SQL:
+
+WITH CTE AS (
+SELECT 
+    DATE(created_at) AS dt, 
+    action
+FROM events
+WHERE EXTRACT(MONTH FROM created_at) = 1
+AND EXTRACT(YEAR FROM created_at) = 2020
+)
+
+SELECT 
+    dt, 
+    1.0 * SUM(CASE 
+        WHEN LOWER(action) LIKE '%post_enter%' THEN 1
+        WHEN LOWER(action) LIKE '%post_submit%' THEN 1
+        WHEN LOWER(action) LIKE '%post_cancel%' THEN -1
+        ELSE 0 
+    END) / COUNT(*) AS post_success_rate
+FROM CTE 
+GROUP BY 1
+
+
+PYTHON:
+
