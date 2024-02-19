@@ -1,0 +1,13 @@
+https://www.interviewquery.com/questions/flight-records
+
+SQL:
+
+SELECT DISTINCT
+CASE WHEN source_location < destination_location THEN source_location ELSE destination_location END AS destination_one,
+CASE WHEN source_location > destination_location THEN source_location ELSE destination_location END AS destination_two
+FROM flights
+ORDER BY 2
+
+
+PYTHON:
+
