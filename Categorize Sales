@@ -1,0 +1,26 @@
+https://www.interviewquery.com/questions/categorize-sales
+
+SQL:
+
+SELECT
+region,
+COALESCE(MAX("total_sales"), 0) AS "total_sales",
+COALESCE(MAX("promotional_sales"), 0) AS "promotional_sales",
+COALESCE(MAX("premium_sales"), 0) AS "premium_sales",
+COALESCE(MAX("standard_sales"), 0) AS "standard_sales"
+FROM
+
+(SELECT
+region,
+SUM(sale_amount) AS "total_sales",
+SUM(CASE WHEN sale_amount < 2000 AND LOWER(region) NOT LIKE '%east%' AND EXTRACT(MONTH FROM sale_date) != 7 THEN sale_amount END) AS "standard_sales",
+SUM(CASE WHEN (sale_amount >= 2000 AND EXTRACT(MONTH FROM sale_date) != 7) OR (LOWER(region) LIKE '%east%' AND EXTRACT(MONTH FROM sale_date) != 7) THEN sale_amount END) AS "premium_sales",
+SUM(CASE WHEN EXTRACT(MONTH FROM sale_date) = 7 THEN sale_amount END) AS "promotional_sales"
+FROM sales
+GROUP BY 1) A
+
+GROUP BY 1
+ORDER BY 1
+
+
+PYTHON:
