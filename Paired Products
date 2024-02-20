@@ -1,0 +1,29 @@
+https://www.interviewquery.com/questions/paired-products
+
+SQL:
+
+WITH cte AS (
+    SELECT 
+        p.id, p.name, p.price, 
+        t.user_id, t.created_at, t.product_id, t.quantity
+    FROM transactions t
+    JOIN products p 
+    ON p.id = t.product_id
+)
+
+SELECT 
+    c1.name AS p1, 
+    c2.name AS p2,
+    COUNT(*) AS qty
+FROM cte c1 
+JOIN cte c2 
+ON c1.created_at = c2.created_at AND c1.user_id = c2.user_id
+WHERE c1.name != c2.name 
+AND c1.name < c2.name
+GROUP BY 1, 2
+ORDER BY 3 DESC, 1 ASC, 2 ASC
+LIMIT 5
+
+
+PYTHON:
+
