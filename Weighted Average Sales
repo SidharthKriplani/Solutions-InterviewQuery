@@ -1,0 +1,19 @@
+https://www.interviewquery.com/questions/weighted-average-sales#comments
+
+SQL:
+
+SELECT date, product_id, weighted_avg_sales
+FROM (
+SELECT
+date,
+product_id,
+sales_volume*0.5 +
+LAG(sales_volume, 1) OVER(ORDER BY date ASC)*0.3 +
+LAG(sales_volume, 2) OVER(ORDER BY date ASC)*0.2 AS weighted_avg_sales,
+ROW_NUMBER() OVER(ORDER BY date ASC) AS row_num
+FROM sales
+) A
+WHERE row_num > 2
+
+
+PYTHON:
