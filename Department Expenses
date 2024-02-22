@@ -1,0 +1,27 @@
+https://www.interviewquery.com/questions/department-expenses
+
+SQL:
+
+WITH cte AS (
+    SELECT 
+    D.ID AS department_id, 
+    D.NAME AS department_name, 
+    E.ID AS expense_id, 
+    E.AMOUNT AS expense_amount, 
+    E.DATE AS expense_date 
+    FROM expenses E 
+    JOIN departments D 
+    ON D.ID = E.DEPARTMENT_ID
+)
+
+SELECT 
+DEPARTMENT_NAME, 
+SUM(EXPENSE_AMOUNT) AS total_expense, 
+(SELECT ROUND(AVG(EXPENSE_AMOUNT), 2) FROM cte) AS average_expense 
+FROM cte 
+GROUP BY 1
+ORDER BY 2 DESC
+
+
+PYTHON:
+
