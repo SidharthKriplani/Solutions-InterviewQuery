@@ -1,0 +1,28 @@
+https://www.interviewquery.com/questions/percentage-of-revenue-by-year
+
+SQL:
+
+WITH TotalRevenue AS (
+    SELECT SUM(amount) AS total_revenue
+    FROM annual_payments
+),
+
+FirstRevenue AS (
+    SELECT SUM(amount) AS first_revenue
+    FROM annual_payments
+    WHERE created_at = (SELECT MIN(created_at) FROM annual_payments)
+),
+
+LastRevenue AS (
+    SELECT SUM(amount) AS last_revenue
+    FROM annual_payments
+    WHERE created_at = (SELECT MAX(created_at) FROM annual_payments)
+)
+
+SELECT 
+    ROUND((100.0 * (SELECT first_revenue FROM FirstRevenue) / (SELECT total_revenue FROM TotalRevenue))::numeric, 2) AS percent_first,
+    ROUND((100.0 * (SELECT last_revenue FROM LastRevenue) / (SELECT total_revenue FROM TotalRevenue))::numeric, 2) AS percent_last;
+
+
+PYTHON:
+
