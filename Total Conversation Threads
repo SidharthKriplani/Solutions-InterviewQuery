@@ -1,0 +1,19 @@
+https://www.interviewquery.com/questions/total-conversation-threads
+
+SQL:
+
+SELECT COUNT(*) AS TOTAL_CONV_THREADS
+FROM (
+    SELECT 
+    RECEIVER_ID AS ID1, SENDER_ID AS ID2
+    FROM MESSENGER_SENDS
+    UNION 
+    SELECT 
+    SENDER_ID AS ID1, RECEIVER_ID AS ID2
+    FROM MESSENGER_SENDS
+) A 
+WHERE ID1 < ID2
+
+
+PYTHON:
+
