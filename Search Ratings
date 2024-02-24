@@ -1,0 +1,11 @@
+https://www.interviewquery.com/questions/search-ratings
+
+SQL:
+
+SELECT query, ROUND(AVG((1/position) * rating), 2) AS avg_rating
+FROM search_results
+GROUP BY 1
+
+
+PYTHON:
+
