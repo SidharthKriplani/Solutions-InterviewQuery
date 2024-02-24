@@ -1,0 +1,29 @@
+https://www.interviewquery.com/questions/closed-accounts
+
+SQL:
+
+WITH active_accounts AS (
+    SELECT * 
+    FROM account_status
+    WHERE LOWER(status) LIKE '%open%'
+    AND EXTRACT(MONTH FROM date) = 12
+    AND EXTRACT(DAY FROM date) = 31
+    AND EXTRACT(YEAR FROM date) = 2019
+),
+
+closed_accounts AS (
+    SELECT * 
+    FROM account_status
+    WHERE LOWER(status) LIKE '%close%'
+    AND EXTRACT(MONTH FROM date) = 1
+    AND EXTRACT(DAY FROM date) = 1
+    AND EXTRACT(YEAR FROM date) = 2020
+    AND account_id IN (SELECT account_id FROM active_accounts)
+) 
+
+SELECT 1.0 * COUNT(DISTINCT account_id) / (SELECT COUNT(DISTINCT account_id) FROM active_accounts) percentage_closed
+FROM closed_accounts
+
+
+PYTHON:
+
