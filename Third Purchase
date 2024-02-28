@@ -1,0 +1,17 @@
+https://www.interviewquery.com/questions/third-purchase
+
+SQL:
+
+WITH CTE AS (
+  SELECT Created_At, Product_Id, Quantity, User_Id, 
+  DENSE_RANK() OVER(PARTITION BY User_Id ORDER BY Created_At ASC, Product_Id ASC) Rankk
+  FROM Transactions
+)
+
+SELECT Created_At, Product_Id, Quantity, User_Id
+FROM CTE
+WHERE Rankk = 3
+
+
+PYTHON:
+
