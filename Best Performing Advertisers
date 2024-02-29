@@ -1,0 +1,45 @@
+https://www.interviewquery.com/questions/best-performing-advertisers
+
+SQL:
+
+WITH cte AS (
+    SELECT 
+        a.advertiser_id, 
+        a.advertiser_name, 
+        r.payment_id, 
+        r.transaction_date, 
+        r.amount
+    FROM advertisers a
+    JOIN revenue r ON a.advertiser_id = r.advertiser_id
+    WHERE EXTRACT(YEAR FROM r.transaction_date) = 2021
+), 
+
+top_advertiser AS (
+    SELECT advertiser_name
+    FROM (
+        SELECT advertiser_name, weekly_revenue, 
+            DENSE_RANK() OVER(ORDER BY weekly_revenue DESC) AS rankk
+        FROM (
+            SELECT advertiser_name, ROUND(1.0 * SUM(amount) / 7) AS weekly_revenue
+            FROM cte 
+            GROUP BY 1
+            ORDER BY 2 DESC 
+        ) a
+    ) a
+    WHERE rankk = 1
+)
+
+SELECT advertiser_name, transaction_date, amount
+FROM (
+    SELECT advertiser_name, transaction_date, amount, 
+        DENSE_RANK() OVER(PARTITION BY advertiser_name ORDER BY amount DESC) AS rankk
+    FROM cte 
+    WHERE advertiser_name IN (SELECT advertiser_name FROM top_advertiser)
+    ORDER BY 3 DESC
+) a
+WHERE rankk < 4
+ORDER BY 1, rankk;
+
+
+PYTHON:
+
