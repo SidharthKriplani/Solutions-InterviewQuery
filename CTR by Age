@@ -1,0 +1,32 @@
+https://www.interviewquery.com/questions/ctr-by-age
+
+SQL:
+
+WITH CTE AS (
+    SELECT SE.search_id AS search_id, SE.query AS search_query, SE.has_clicked AS search_clicked, 
+           SE.user_id AS user_id, SE.search_time AS search_time, U.name AS user_name, U.birthdate AS user_birthday, 
+           DATE_PART('YEAR', SE.search_time) - DATE_PART('YEAR', U.birthdate) AS age
+    FROM search_events SE  
+    JOIN users U ON U.id = SE.user_id
+)
+
+SELECT 
+    search_id, search_query, search_clicked, user_id, search_time, user_name, user_birthday, age, 
+    CASE 
+        WHEN age BETWEEN 0 AND 9 THEN 0
+        WHEN age BETWEEN 10 AND 19 THEN 1
+        WHEN age BETWEEN 20 AND 29 THEN 2
+        WHEN age BETWEEN 30 AND 39 THEN 3
+        WHEN age BETWEEN 40 AND 49 THEN 4
+        WHEN age BETWEEN 50 AND 59 THEN 5
+        WHEN age BETWEEN 60 AND 69 THEN 6
+        WHEN age BETWEEN 70 AND 79 THEN 7
+        WHEN age BETWEEN 80 AND 89 THEN 8
+        WHEN age BETWEEN 90 AND 99 THEN 9
+    END AS age_groups 
+FROM CTE 
+WHERE DATE_PART('YEAR', search_time) = 2021;
+
+
+PYTHON:
+
