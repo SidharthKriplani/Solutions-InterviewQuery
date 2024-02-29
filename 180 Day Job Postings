@@ -1,0 +1,20 @@
+https://www.interviewquery.com/questions/180-day-job-postings
+
+SQL:
+
+WITH most_recent_date AS (
+    SELECT MAX(date_posted) AS latest_date
+    FROM job_postings
+)
+
+SELECT
+    ROUND(100.0 * COUNT(*) /
+        (SELECT COUNT(*) FROM job_postings
+         WHERE DATEDIFF(CURDATE(), (SELECT latest_date FROM most_recent_date)) <= 180), 0) AS percentage
+FROM job_postings
+WHERE DATEDIFF(CURDATE(), (SELECT latest_date FROM most_recent_date)) <= 180
+    AND (is_revoked = 1 OR is_revoked = TRUE);
+
+
+PYTHON:
+
