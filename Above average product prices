@@ -1,0 +1,32 @@
+https://www.interviewquery.com/questions/above-average-product-prices
+
+SQL:
+
+WITH cte AS (
+    SELECT 
+        t.id AS transaction_id, 
+        t.user_id AS user_id, 
+        t.created_at AS transaction_created_at, 
+        t.quantity AS quantity, 
+        p.id AS product_id, 
+        p.name AS product_name, 
+        p.price AS product_price 
+    FROM transactions t 
+    JOIN products p ON t.product_id = p.id
+), 
+
+average_transaction_price AS (
+    SELECT ROUND(AVG(quantity * product_price)::NUMERIC, 1) AS avg_price 
+    FROM cte 
+)
+
+SELECT 
+    (SELECT avg_price FROM average_transaction_price) AS avg_price, 
+    product_id, 
+    product_price
+FROM cte 
+WHERE product_price > (SELECT avg_price FROM average_transaction_price);
+
+
+PYTHON:
+
