@@ -1,0 +1,65 @@
+https://www.interviewquery.com/questions/size-of-joins
+
+SQL:
+
+WITH top_ads AS 
+(
+    SELECT id, name 
+    FROM ads
+    WHERE id < 4
+), 
+
+inner_join AS 
+(
+    SELECT 'inner_join' AS join_type, COUNT(*) AS number_of_rows
+    FROM ads 
+    INNER JOIN top_ads 
+    ON ads.id = top_ads.id
+), 
+
+left_join AS 
+(
+    SELECT 'left_join' AS join_type, COUNT(*) AS number_of_rows
+    FROM ads 
+    LEFT JOIN top_ads 
+    ON ads.id = top_ads.id
+), 
+
+right_join AS 
+(
+    SELECT 'right_join' AS join_type, COUNT(*) AS number_of_rows
+    FROM ads 
+    RIGHT JOIN top_ads 
+    ON ads.id = top_ads.id
+),
+
+cross_join AS 
+(
+    SELECT 'cross_join' AS join_type, COUNT(*) AS number_of_rows
+    FROM ads 
+    CROSS JOIN top_ads
+)
+
+SELECT *
+FROM 
+(
+    SELECT * FROM inner_join
+    UNION 
+    SELECT * FROM left_join
+    UNION 
+    SELECT * FROM right_join
+    UNION 
+    SELECT * FROM cross_join
+) a 
+ORDER BY 
+    CASE 
+        WHEN LOWER(join_type) LIKE 'inner_join' THEN 1
+        WHEN LOWER(join_type) LIKE 'left_join' THEN 2
+        WHEN LOWER(join_type) LIKE 'right_join' THEN 3
+        WHEN LOWER(join_type) LIKE 'cross_join' THEN 4 
+        ELSE 5 
+    END;
+
+
+PYTHON:
+
