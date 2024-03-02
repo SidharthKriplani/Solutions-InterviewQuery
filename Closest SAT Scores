@@ -24,3 +24,22 @@ LIMIT 1;
 
 PYTHON:
 
+import pandas as pd
+
+def closest_sat_scores(scores: pd.DataFrame):
+    scores['key'] = 1
+    scores = pd.merge(scores, scores, on = 'key').drop('key', 1) 
+    scores = scores[scores['student_x']!=scores['student_y']]
+    scores['score_diff'] = abs(scores['score_x']-scores['score_y'])
+    scores = scores.sort_values(by ='score_diff', ascending = True)[:1][['student_x', 'student_y', 'score_diff']]
+    scores = scores.rename(columns = {'student_x': 'one_student', 'student_y': 'other_student'})
+    return scores
+
+
+PYSPARK:
+
+
+
+
+R:
+
