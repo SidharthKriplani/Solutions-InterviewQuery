@@ -20,16 +20,3 @@ ORDER BY 1
 
 
 PYTHON:
-
-import pandas as pd
-
-def seven_day_streak(events: pd.DataFrame) -> pd.DataFrame:
-    events['curr_day'] = pd.to_datetime(events['created_at']).dt.day
-    events['prev_day'] = events.groupby('user_id')['curr_day'].shift(1)
-    events['day_diff'] = events['curr_day'] - events['prev_day'] 
-    events = events.groupby(['user_id', 'url'])['day_diff'].sum().reset_index(name = 'sum_day_diff')
-    return round(len(events[events['sum_day_diff']==6]['user_id'].unique())/len(events), 2)
-
-
-PYSPARK:
-
