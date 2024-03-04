@@ -2,24 +2,29 @@ https://www.interviewquery.com/questions/first-touch-attribution
 
 SQl:
 
-WITH join_cte AS (
+WITH first_sessions AS (
 SELECT
-A.session_id, A.channel, A.conversion,
-US.created_at, US.user_id
+us.user_id,
+MIN(us.created_at) AS first_session_time
+FROM user_sessions us
+JOIN attribution a ON us.session_id = a.session_id
+GROUP BY us.user_id
+HAVING SUM(a.conversion) > 0 -- Ensures the user eventually converted
+),
 
-FROM attribution A
-JOIN user_sessions US
-ON A.session_id = US.session_id),
+first_touch AS (
+SELECT
+fs.user_id,
+a.channel
+FROM first_sessions fs
+JOIN user_sessions us ON fs.user_id = us.user_id AND fs.first_session_time = us.created_at
+JOIN attribution a ON us.session_id = a.session_id
+)
 
-CTE_2 AS (
-SELECT channel, user_id,
-DENSE_RANK() OVER(PARTITION BY user_id ORDER BY created_at) AS rankk
-FROM join_cte
-WHERE conversion = 1)
-
-SELECT channel, user_id
-FROM CTE_2
-WHERE rankk = 1
+SELECT 
+user_id, 
+channel AS first_touch_channel
+FROM first_touch
 
 
 PYTHON:
