@@ -2,33 +2,34 @@ https://www.interviewquery.com/questions/avg-friend-requests-by-age-group
 
 SQL:
 
-With CTE AS (
-SELECT
-FR.requester_id AS sender,
-FR.receiver_id AS receiver,
-FR.sent_at AS sent_time,
-RA.accepted_at AS accepted_time
+WITH CTE AS 
+(SELECT 
+FR.requester_id AS Sender, 
+FR.receiver_id AS Receiver, 
+FR.sent_at AS Sent_Time, 
+RA.accepted_at AS Accepted_Time 
 
-FROM friend_requests FR
-JOIN requests_accepted RA
-ON FR.requester_id = RA.requester_id AND FR.receiver_id = RA.accepter_id),
+FROM friend_requests FR 
+JOIN requests_accepted RA 
+ON FR.requester_id = RA.requester_id AND FR.receiver_id = RA.accepter_id), 
 
-CTE_2 AS (
-SELECT
-AG.age_group AS age_group, COUNT(*) cnt_1
+CTE_2 AS 
+(SELECT 
+AG.age_group AS Age_Group, COUNT(*) AS Cnt_1
 
 FROM CTE
-JOIN age_groups AG
-ON AG.user_id = CTE.sender
-GROUP BY 1),
+JOIN age_groups AG 
+ON AG.user_id = CTE.Sender
+GROUP BY 1), 
 
-CTE_3 AS (
-SELECT age_group, COUNT(*) cnt_2 FROM age_groups GROUP BY 1)
+CTE_3 AS 
+(SELECT Age_Group, COUNT(*) AS Cnt_2 FROM age_groups GROUP BY 1)
 
-SELECT CTE_2.age_group, ROUND(CTE_2.cnt_1/CTE_3.cnt_2, 2) AS average_acceptance
-FROM CTE_2
-JOIN CTE_3
-ON CTE_2.age_group = CTE_3.age_group
+SELECT CTE_2.Age_Group, ROUND(1.0*CTE_2.Cnt_1/CTE_3.Cnt_2, 2) AS Average_Acceptance
+FROM CTE_2 
+JOIN CTE_3 
+ON CTE_2.Age_Group = CTE_3.Age_Group
+ORDER BY 2 DESC 
 
 
 PYTHON:
