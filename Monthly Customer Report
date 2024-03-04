@@ -2,19 +2,25 @@ https://www.interviewquery.com/questions/monthly-customer-report
 
 SQL:
 
-with join_table as 
-(select 
-t.id, t.user_id, t.created_at, t.product_id, t.quantity, 
-p.name, p.price, 
-u.name, u.sex
+WITH join_table AS (
+    SELECT 
+        t.id AS transaction_id, t.user_id AS user_id, t.created_at, t.product_id, t.quantity AS quantity, 
+        p.name AS product_name, p.price AS product_price, 
+        u.name AS user_name, u.sex AS user_sex
 
-from transactions t
-full outer join products p on p.id = t.id
-full outer join users u on u.id = t.id)
+    FROM transactions t
+    FULL OUTER JOIN products p ON p.id = t.id
+    FULL OUTER JOIN users u ON u.id = t.id
+)
 
-select distinct extract(month from created_at)
-from join_table
-where extract(year from created_at) = 2020
+SELECT 
+    EXTRACT(MONTH FROM created_at), 
+    COUNT(DISTINCT user_id) AS num_customers, 
+    COUNT(DISTINCT transaction_id) AS num_orders, 
+    SUM(quantity*COALESCE(product_price, 1)) AS order_amt
+FROM join_table
+WHERE EXTRACT(YEAR FROM created_at) = 2020
+GROUP BY 1
 
 
 PYTHON:
