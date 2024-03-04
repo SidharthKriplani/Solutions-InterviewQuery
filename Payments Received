@@ -2,26 +2,27 @@ https://www.interviewquery.com/questions/payments-received
 
 SQL:
 
-WITH CTE AS (
-SELECT
-sender_id, recipient_id, payment_state, amount_cents
-FROM payments P
-WHERE sender_id IN (SELECT id
-FROM users
-WHERE EXTRACT(MONTH FROM created_at) = 1 AND EXTRACT(YEAR FROM created_at) = 2020))
+WITH Eligible_Users AS (
+SELECT Id, Created_At
+FROM Users
+WHERE EXTRACT(MONTH FROM Created_At) = 1 
+AND EXTRACT(YEAR FROM Created_At) = 2020
+),
 
-SELECT *
-FROM
-(SELECT id, SUM(amount_cents)/100 AS dollars
-FROM
-(SELECT sender_id AS id, amount_cents
-FROM CTE
-WHERE LOWER(payment_state) = 'success'
-UNION ALL
-SELECT recipient_id AS id, amount_cents
-FROM CTE
-WHERE LOWER(payment_state) = 'success') A
-GROUP BY 1) A
+Combined_Payments AS (
+SELECT
+U.Id AS User_Id,
+SUM(CASE WHEN P.Payment_State = 'success' AND P.Sender_Id = U.Id THEN P.Amount_Cents ELSE 0 END +
+    CASE WHEN P.Payment_State = 'success' AND P.Recipient_Id = U.Id THEN P.Amount_Cents ELSE 0 END) / 100.0 AS Total_Dollars
+FROM Eligible_Users U
+LEFT JOIN Payments P ON P.Sender_Id = U.Id OR P.Recipient_Id = U.Id
+WHERE P.Created_At BETWEEN U.Created_At AND U.Created_At + INTERVAL '30 days'
+GROUP BY U.Id
+)
+
+SELECT COUNT(*) AS Num_Customers
+FROM Combined_Payments
+WHERE Total_Dollars > 100;
 
 
 PYTHON:
