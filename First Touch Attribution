@@ -22,8 +22,8 @@ JOIN attribution a ON us.session_id = a.session_id
 )
 
 SELECT 
-user_id, 
-channel AS first_touch_channel
+channel, 
+user_id
 FROM first_touch
 
 
