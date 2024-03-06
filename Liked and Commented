@@ -2,21 +2,26 @@ https://www.interviewquery.com/questions/liked-and-commented
 
 SQL:
 
-WITH CTE AS (
-SELECT
-U.id AS user_id, U.name AS user_name, U.created_at AS user_created_at,
-E.action AS event_action, E.created_at AS event_created_at
-FROM users U
-JOIN events E
-ON E.user_id = U.id),
+WITH cte AS (
+SELECT 
+u.id AS user_id, 
+u.name AS user_name, 
+u.created_at AS user_created_at, 
+e.action AS event_action, 
+e.created_at AS event_created_at 
+FROM users u
+LEFT JOIN events e  
+ON e.user_id = u.id
+), 
 
 likers_commenters AS (
-SELECT DISTINCT user_id
-FROM CTE
-WHERE event_action IN ('like', 'comment'))
+  SELECT DISTINCT user_id 
+  FROM cte 
+  WHERE event_action IN ('like', 'comment')
+)
 
-SELECT 1.0*COUNT(DISTINCT user_id)/(SELECT COUNT(DISTINCT user_id) FROM CTE)
-FROM CTE
+SELECT ROUND(1.0*COUNT(DISTINCT user_id)/(SELECT COUNT(DISTINCT user_id) FROM cte), 2) AS percent_never 
+FROM cte 
 WHERE user_id NOT IN (SELECT user_id FROM likers_commenters)
 
 
