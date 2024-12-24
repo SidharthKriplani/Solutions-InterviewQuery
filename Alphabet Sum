@@ -1,0 +1,16 @@
+https://www.interviewquery.com/questions/alphabet-sum
+
+import string
+
+def sum_alphabet(words):
+    out_li = []
+    words = [i.lower() for i in words]
+
+    cnt = 0
+    for i in words:
+        for x in i:
+            cnt+=string.ascii_lowercase.index(x)+1
+        out_li.append(cnt)
+        cnt = 0
+
+    return out_li
