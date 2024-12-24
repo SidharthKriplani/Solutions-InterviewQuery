@@ -1,0 +1,25 @@
+https://www.interviewquery.com/questions/rectangle-overlap
+
+def rectangle_overlap(a, b):
+    a_x = [point[0] for point in a]
+    a_y = [point[1] for point in a]
+    # Extracting x and y coordinates separately for rectangle b
+    b_x = [point[0] for point in b]
+    b_y = [point[1] for point in b]
+
+    # Finding the min and max for x and y coordinates of rectangle a
+    a_x_min, a_x_max = min(a_x), max(a_x)
+    a_y_min, a_y_max = min(a_y), max(a_y)
+
+    # Finding the min and max for x and y coordinates of rectangle b
+    b_x_min, b_x_max = min(b_x), max(b_x)
+    b_y_min, b_y_max = min(b_y), max(b_y)
+
+    # Checking if one rectangle is on left or right side of other
+    if a_x_max < b_x_min or b_x_max < a_x_min:
+        return False
+    # Checking if one rectangle is above or below the other
+    if a_y_max < b_y_min or b_y_max < a_y_min:
+        return False
+
+    return True
