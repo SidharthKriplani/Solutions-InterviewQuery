@@ -1,0 +1,11 @@
+https://www.interviewquery.com/questions/flatten-n-dimensional-array-to-1d-array
+
+def flatten_array(array):
+    flattened = []
+    for item in array:
+        if isinstance(item, list):
+            flattened.extend(flatten_array(item))
+        else:
+            flattened.append(item)
+    
+    return flattened
