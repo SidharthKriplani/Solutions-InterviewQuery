@@ -1,0 +1,12 @@
+https://www.interviewquery.com/questions/counting-triplets-that-sum-to-a-query-number
+
+def count_triplets(nums, k):
+    cnt = 0
+    n = len(nums)
+    # Check each triplet combination
+    for i in range(n):
+        for j in range(i + 1, n):
+            for m in range(j + 1, n):
+                if nums[i] + nums[j] + nums[m] == k:
+                    cnt += 1
+    return cnt
