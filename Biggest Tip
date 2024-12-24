@@ -1,0 +1,4 @@
+https://www.interviewquery.com/questions/biggest-tip
+
+def most_tips(user_ids, tips):
+    return user_ids[tips.index(max(tips))]
