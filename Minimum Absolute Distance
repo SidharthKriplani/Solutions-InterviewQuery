@@ -1,0 +1,15 @@
+https://www.interviewquery.com/questions/minimum-absolute-distance
+
+def min_distance(test_input):
+    diff = []
+    test_input = sorted(test_input)
+    for i in range(1, len(test_input)):
+        diff.append(test_input[i]-test_input[i-1])
+    diff = min([abs(i) for i in diff])
+
+    out_li = []
+    for i in range(1, len(test_input)):
+        if test_input[i]-test_input[i-1] == diff:
+            out_li.append([test_input[i-1], test_input[i]])
+
+    return out_li
