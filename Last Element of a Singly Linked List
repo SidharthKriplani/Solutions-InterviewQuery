@@ -1,0 +1,16 @@
+https://www.interviewquery.com/questions/last-element-of-a-singly-linked-list
+
+def get_last_node(head):
+    if not head:
+        return None
+
+    current_node = head
+
+    while current_node['next'] is not None:
+        current_node = current_node['next']
+    
+    return current_node
+
+(I had no idea what a singly linked list is but this question is very good to understand that. Basically a singly linked list is a list of nodes that run in a single direction, the first node is called the head, the last node points to NULL. Every node has a pointer and a data element. We can modify data elements from end/beginning/anywhere at all
+to represent a singly linked list in python we use nested dictionaries containing a data key and a pointer key; data key has the data as the item, pointer key points to the next node as an item
+this question just wants to find the last node, so it is easy, I did chatgpt the solution since my python was very weak then)
